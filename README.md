@@ -1,4 +1,4 @@
-# vinted_homework
+# Vinted homework
 Backend homework.
 
 ## To start and test solution:  
