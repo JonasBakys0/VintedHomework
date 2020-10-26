@@ -9,3 +9,6 @@ _NCrunch_*
 
 # Visual studio cache/option directory
 .vs/
+
+# TestResults
+TestResults/
