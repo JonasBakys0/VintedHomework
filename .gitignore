@@ -4,4 +4,8 @@
 [Dd]ebug/
 
 # NCrunch files
+_NCrunch_*
 *.ncrunch*
+
+# Visual studio cache/option directory
+.vs/
