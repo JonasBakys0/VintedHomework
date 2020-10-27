@@ -154,26 +154,6 @@ namespace DiscountCalculator.Tests
 		}
 
 		[Test]
-		public void WhenInputIsNotValidItShouldBeMarkedAsCorupted ()
-		{
-			// Arrange
-			var testInput = new List<Shipment>
-			{
-				new Shipment(DateTime.Parse("2015-03-01"), Providers.LP, Size.L, "test"),
-				new Shipment(DateTime.Parse("2015-04-01"), Providers.MR, Size.S, "test")
-			};
-			_inputOutputService.Setup(s => s.LoadShipments()).Returns(testInput);
-			testInput.First().Discount = Constants.MonthlyDiscouts + 2;
-
-			// Act
-			_countingService.CalculateShipmentsDiscounts();
-
-			// Assert
-			Assert.AreEqual(Constants.MonthlyDiscouts, testInput.First().Discount);
-			Assert.AreEqual(Constants.ShipmentPrices.OrderBy(p => p.Price).First().Price, testInput.Last().Price);
-		}
-
-		[Test]
 		public void WhenInpusIsCoruptedShouldNotApllyRules()
 		{
 			// Arrange
