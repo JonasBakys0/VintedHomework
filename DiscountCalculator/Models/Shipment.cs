@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
 
 namespace DiscountCalculator.Models
 {
 	public class Shipment
 	{
 		public DateTime Date { get; set; }
-		public Providers Provider { get; set; }
-		public Size PackageSize { get; set; }
-		public decimal Price { get; set; }
+		public Providers? Provider { get; set; }
+		public Size? PackageSize { get; set; }
+		public decimal? Price { get; set; }
 		public bool IsCorupted { get; set; }
 		public string InputContent { get; set; }
 		public decimal? Discount { get; set; }
@@ -33,6 +31,17 @@ namespace DiscountCalculator.Models
 		public void ApplyDiscount()
 		{
 			Price -= Discount ?? 0;
+		}
+
+		public void SetPrice()
+		{
+			Price = Constants.ShipmentPrices.FirstOrDefault(p => p.Provider == Provider && p.PackageSize == PackageSize).Price;
+		}
+
+		public override string ToString()
+		{
+			return $"{Date.ToShortDateString()} {PackageSize} {Provider} {Price:0.00} " + 
+				(Discount == null || Discount == 0 ? "-" : $"{ Discount:0.00}");
 		}
 	}
 }

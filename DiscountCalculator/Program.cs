@@ -13,7 +13,7 @@ namespace DiscountCalculator
 		{
 			RegisterServices();
 			IServiceScope scope = _serviceProvider.CreateScope();
-			scope.ServiceProvider.GetRequiredService<ConsoleApplication>().Run();
+			scope.ServiceProvider.GetRequiredService<DiscountCalculator>().Run();
 			DisposeServices();
 		}
 
@@ -24,7 +24,7 @@ namespace DiscountCalculator
 			services.AddSingleton<IInputOutputService, InputOutputService>();
 			services.AddSingleton<IValidateService, ValidateService>();
 			services.AddSingleton<ICountingService, CountingService>();
-			services.AddSingleton<ConsoleApplication>();
+			services.AddSingleton<DiscountCalculator>();
 			_serviceProvider = services.BuildServiceProvider(true);
 		}
 

@@ -1,10 +1,7 @@
 ﻿using DiscountCalculator.Models;
 using DiscountCalculator.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace DiscountCalculator.Services
 {
@@ -12,7 +9,6 @@ namespace DiscountCalculator.Services
 	{
 		private readonly IRulesService _rulesService;
 		private readonly IInputOutputService _inputOutputService;
-		private readonly Prices _shipmentsPrices = new Prices();
 		private static DateTime currentMonth; 
 
 		public CountingService(IRulesService rulesService, IInputOutputService inputOutputService)
@@ -26,12 +22,15 @@ namespace DiscountCalculator.Services
 			var shipments = _inputOutputService.LoadShipments();
 			foreach(var shipment in shipments)
 			{
-				SetShipmetPrice(shipment);
-				_rulesService.ApplyRules(shipment, CheckIfNextMonth(shipment));
-				shipment.ApplyDiscount();
-			}
+				if (!shipment.IsCorupted)
+				{
+					shipment.SetPrice();
+					_rulesService.ApplyRules(shipment, CheckIfNextMonth(shipment));
+					shipment.ApplyDiscount();
+				}
 
-			_inputOutputService.PrintShipments(shipments);
+				_inputOutputService.PrintShipment(shipment);
+			}
 		}
 
 		private bool CheckIfNextMonth(Shipment shipment)
@@ -43,11 +42,6 @@ namespace DiscountCalculator.Services
 			}
 
 			return false;
-		}
-
-		private void SetShipmetPrice(Shipment shipment)
-		{
-			shipment.Price = _shipmentsPrices.ShipmentPrices.FirstOrDefault(p => p.Provider == shipment.Provider && p.PackageSize == shipment.PackageSize).Price;
 		}
 	}
 }

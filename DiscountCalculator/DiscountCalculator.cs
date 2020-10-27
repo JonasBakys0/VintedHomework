@@ -2,10 +2,11 @@
 
 namespace DiscountCalculator
 {
-	class ConsoleApplication
+	class DiscountCalculator
 	{
 		private readonly ICountingService _service;
-		public ConsoleApplication(ICountingService service)
+
+		public DiscountCalculator(ICountingService service)
 		{
 			_service = service;
 		}

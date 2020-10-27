@@ -7,8 +7,7 @@ namespace DiscountCalculator.Services
 	public class RulesService : IRulesService
 	{
 		public static int lpLargeShipmentsCount = 0;
-		public static decimal monthlyDiscouts = 10;
-		public static Prices _prices = new Prices();
+		public static decimal monthlyDiscouts = Constants.MonthlyDiscouts;
 
 		public void ApplyRules(Shipment shipment, bool isNextMonth)
 		{
@@ -23,17 +22,17 @@ namespace DiscountCalculator.Services
 		/// <summary>
 		/// Rule - All S shipments should always match the lowest S package price among the providers.
 		/// </summary>
-		/// <returns>Lowest price</returns>
+		/// <param name="shipment">shipment object to witch we try to apply the rule</param>
 		private void GetLowestSmallShipmentPrice(Shipment shipment)
 		{
 			if (shipment.PackageSize.Equals(Size.S))
-				shipment.Discount = shipment.Price - _prices.ShipmentPrices.OrderBy(p => p.Price).FirstOrDefault(p => p.PackageSize == Size.S).Price;
+				shipment.Discount = shipment.Price - Constants.ShipmentPrices.OrderBy(p => p.Price).FirstOrDefault(p => p.PackageSize == Size.S).Price;
 		}
 
 		/// <summary>
 		/// Rule - Third L shipment via LP should be free, but only once a calendar month.
 		/// </summary>
-		/// <returns>Is this shipment are third large shipment in LP</returns>
+		/// <param name="shipment">shipment object to witch we try to apply the rule</param>
 		private void IsThirdLargeLPShipment(Shipment shipment)
 		{
 			if (shipment.Provider.Equals(Providers.LP) && shipment.PackageSize.Equals(Size.L) && ++lpLargeShipmentsCount == 3)
@@ -44,11 +43,9 @@ namespace DiscountCalculator.Services
 		/// Rule - Accumulated discounts cannot exceed 10 € in a calendar month.
 		/// If there are not enough funds to fully cover a discount this calendar month, it should be covered partially.
 		/// </summary>
-		/// <param name=""></param>
-		/// <returns></returns>
+		/// <param name="shipment">shipment object to witch we try to apply the rule</param>
 		private void MothlyDiscounsLeft(Shipment shipment)
 		{
-			//shipment.Discount = mothlyDiscouts < shipment.Discount ? mothlyDiscouts : shipment.Discount;
 			if (shipment.Discount > monthlyDiscouts)
 				shipment.Discount = monthlyDiscouts;
 
@@ -59,7 +56,7 @@ namespace DiscountCalculator.Services
 		private void ResetMonthlyLimits()
 		{
 			lpLargeShipmentsCount = 0;
-			monthlyDiscouts = 10;
+			monthlyDiscouts = Constants.MonthlyDiscouts;
 		}
 	}
 }
