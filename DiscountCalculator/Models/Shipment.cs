@@ -9,23 +9,14 @@ namespace DiscountCalculator.Models
 		public Providers? Provider { get; set; }
 		public Size? PackageSize { get; set; }
 		public decimal? Price { get; set; }
-		public bool IsCorupted { get; set; }
-		public string InputContent { get; set; }
 		public decimal? Discount { get; set; }
 
-		public Shipment(DateTime date, Providers provider, Size packageSize, string inputContent)
+		public Shipment(DateTime date, Providers provider, Size packageSize)
 		{
 			Date = date;
 			Provider = provider;
 			PackageSize = packageSize;
-			IsCorupted = false;
-			InputContent = inputContent;
-		}
-
-		public Shipment(string inputContent)
-		{
-			InputContent = inputContent + " Ignored";
-			IsCorupted = true;
+			SetPrice();
 		}
 
 		public void ApplyDiscount()
@@ -33,15 +24,15 @@ namespace DiscountCalculator.Models
 			Price -= Discount ?? 0;
 		}
 
-		public void SetPrice()
-		{
-			Price = Constants.ShipmentPrices.FirstOrDefault(p => p.Provider == Provider && p.PackageSize == PackageSize).Price;
-		}
-
 		public override string ToString()
 		{
 			return $"{Date.ToShortDateString()} {PackageSize} {Provider} {Price:0.00} " + 
 				(Discount == null || Discount == 0 ? "-" : $"{ Discount:0.00}");
+		}
+
+		private void SetPrice()
+		{
+			Price = Constants.ShipmentPrices.FirstOrDefault(p => p.Provider == Provider && p.PackageSize == PackageSize).Price;
 		}
 	}
 }

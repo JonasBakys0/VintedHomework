@@ -1,4 +1,5 @@
 ﻿using DiscountCalculator.Services.Interfaces;
+using System.IO;
 
 namespace DiscountCalculator
 {
@@ -13,7 +14,15 @@ namespace DiscountCalculator
 
 		public void Run()
 		{
-			_service.CalculateShipmentsDiscounts();
+			string readLine;
+			using (var sr = new StreamReader("input.txt"))
+			{
+				while ((readLine = sr.ReadLine()) != null)
+				{
+					_service.CalculateShipmentsDiscounts(readLine);
+				}
+			}
+			
 		}
 	}
 }

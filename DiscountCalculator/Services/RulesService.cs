@@ -1,5 +1,6 @@
 ﻿using DiscountCalculator.Models;
 using DiscountCalculator.Services.Interfaces;
+using System;
 using System.Linq;
 
 namespace DiscountCalculator.Services
@@ -14,9 +15,9 @@ namespace DiscountCalculator.Services
 			if (isNextMonth)
 				ResetMonthlyLimits();
 
-			GetLowestSmallShipmentPrice(shipment);
-			IsThirdLargeLPShipment(shipment);
-			MothlyDiscounsLeft(shipment);
+				GetLowestSmallShipmentPrice(shipment);
+				IsThirdLargeLPShipment(shipment);
+				MothlyDiscounsLeft(shipment);
 		}
 
 		/// <summary>
