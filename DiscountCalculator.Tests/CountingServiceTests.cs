@@ -12,13 +12,16 @@ namespace DiscountCalculator.Tests
 	public class CountingServiceTests
 	{
 		private static CountingService _countingService;
-		public readonly RulesService _rulesService = new RulesService();
-		public readonly Mock<IValidateService> _validateService = new Mock<IValidateService>();
-		public readonly Mock<IReadDataService> _readDataService = new Mock<IReadDataService>();
+		public static RulesService _rulesService;
+		public static Mock<IValidateService> _validateService;
+		public static Mock<IReadDataService> _readDataService;
 
 		[SetUp]
 		public void Setup()
 		{
+			_validateService = new Mock<IValidateService>();
+			_readDataService = new Mock<IReadDataService>();
+			_rulesService = new RulesService();
 			_countingService = new CountingService(_rulesService, _validateService.Object, _readDataService.Object);
 		}
 
@@ -27,16 +30,15 @@ namespace DiscountCalculator.Tests
 		public void WhenProviderMRAndSizeSmallShouldApplyFirstRule()
 		{
 			// Arrange
-			var testInput = "2015-02-01 S MR";
-			var testshipment1 = new Shipment(DateTime.Parse("2015-02-01"), Providers.MR, Size.S);
-			_readDataService.Setup(s => s.MapToShipment(testInput)).Returns(testshipment1);
+			var testShipment = new Shipment(DateTime.Parse("2015-02-01"), Providers.MR, Size.S);
+			_readDataService.Setup(s => s.MapToShipment("test")).Returns(testShipment);
 
 			// Act
-			_countingService.CalculateShipmentsDiscounts(testInput);
+			_countingService.CalculateShipmentsDiscounts("test");
 
 			// Assert
 			Assert.AreEqual(Constants.ShipmentPrices.OrderBy(p => p.Price).First().Price,
-				testshipment1.Price);
+				testShipment.Price);
 		}
 
 		// Second rule - Third L shipment via LP should be free, but only once a calendar month.
@@ -44,16 +46,22 @@ namespace DiscountCalculator.Tests
 		public void WhenProviderLPAndItsThirdLargeShipmentShouldApplySecondRule()
 		{
 			// Arrange
-			var testInput = "2015-02-01 L LP";
-			var testShipment2 = new Shipment(DateTime.Parse("2015-02-01"), Providers.LP, Size.L);
-			_readDataService.Setup(s => s.MapToShipment(testInput)).Returns(testShipment2);
+			var testShipments = new List<Shipment>
+			{
+				new Shipment(DateTime.Parse("2015-02-01"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-02"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-03"), Providers.LP, Size.L)
+			};
 
 			// Act
-			for(var i = 0; i < 3; i++)
-				_countingService.CalculateShipmentsDiscounts(testInput);
+			foreach (var shipment in testShipments)
+			{
+				_readDataService.Setup(s => s.MapToShipment("test")).Returns(shipment);
+				_countingService.CalculateShipmentsDiscounts("test");
+			}
 
 			// Assert
-			Assert.AreEqual(0, testShipment2.Price);
+			Assert.AreEqual(0, testShipments.Last().Price);
 		}
 
 		// Second rule - Third L shipment via LP should be free, but only once a calendar month.
@@ -61,17 +69,27 @@ namespace DiscountCalculator.Tests
 		public void SecondRuleShouldApplyOnlyOncePerMonth()
 		{
 			// Arrange
-			var testInput = "2015-02-01 L LP";
-			var testShipment3 = new Shipment(DateTime.Parse("2015-02-01"), Providers.LP, Size.L);
-			_readDataService.Setup(s => s.MapToShipment(testInput)).Returns(testShipment3);
+			var testShipments = new List<Shipment>
+			{
+				new Shipment(DateTime.Parse("2015-02-01"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-02"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-03"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-03"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-04"), Providers.LP, Size.L),
+				new Shipment(DateTime.Parse("2015-02-05"), Providers.LP, Size.L)
+			};
 
 			// Act
-			for (var i = 0; i < 4; i++)
-				_countingService.CalculateShipmentsDiscounts(testInput);
+			foreach(var shipment in testShipments)
+			{
+				_readDataService.Setup(s => s.MapToShipment("test")).Returns(shipment);
+				_countingService.CalculateShipmentsDiscounts("test");
+			}
+
 
 			// Assert
 			Assert.AreEqual(Constants.ShipmentPrices.First(p => p.Provider.Equals(Providers.LP) &&
-				p.PackageSize.Equals(Size.L)).Price, testShipment3.Price);
+				p.PackageSize.Equals(Size.L)).Price, testShipments.Last().Price);
 		}
 
 		// Second rule - Third L shipment via LP should be free, but only once a calendar month.
