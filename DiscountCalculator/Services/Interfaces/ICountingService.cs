@@ -2,6 +2,6 @@
 {
 	interface ICountingService
 	{
-		public void CalculateShipmentsDiscounts(string readLine);
+		public void CalculateShipmentDiscount(string readLine);
 	}
 }

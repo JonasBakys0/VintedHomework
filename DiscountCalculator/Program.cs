@@ -21,10 +21,9 @@ namespace DiscountCalculator
 		{
 			var services = new ServiceCollection();
 			services.AddSingleton<IRulesService, RulesService>();
-			//services.AddSingleton<IInputOutputService, InputOutputService>();
 			services.AddSingleton<IValidateService, ValidateService>();
 			services.AddSingleton<ICountingService, CountingService>();
-			services.AddSingleton<IReadDataService, ReadDataService>();
+			services.AddSingleton<IMappingService, MappingService>();
 			services.AddSingleton<DiscountCalculator>();
 			_serviceProvider = services.BuildServiceProvider(true);
 		}

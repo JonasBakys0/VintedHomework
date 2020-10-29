@@ -4,7 +4,7 @@ namespace DiscountCalculator.Models
 {
 	public static class Constants
 	{
-		public static List<ShipmentPrice> ShipmentPrices = new List<ShipmentPrice>
+		public static readonly List<ShipmentPrice> ShipmentPrices = new List<ShipmentPrice>
 		{
 			new ShipmentPrice(Providers.LP, Size.S, 1.50m),
 			new ShipmentPrice(Providers.LP, Size.M, 4.90m),
@@ -14,6 +14,6 @@ namespace DiscountCalculator.Models
 			new ShipmentPrice(Providers.MR, Size.L, 4m)
 		};
 
-		public static decimal MonthlyDiscouts = 10;
+		public static readonly decimal MonthlyDiscouts = 10;
 	}
 }

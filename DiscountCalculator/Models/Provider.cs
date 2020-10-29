@@ -1,10 +1,12 @@
-﻿namespace DiscountCalculator.Models
+﻿using System.ComponentModel;
+
+namespace DiscountCalculator.Models
 {
 	public enum Providers
 	{
-		// La Poste
+		[Description("La Poste")]
 		LP,
-		// Mondial Relay
+		[Description("Mondial Relay")]
 		MR
 	}
 }

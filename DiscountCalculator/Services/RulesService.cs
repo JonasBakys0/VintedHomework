@@ -1,14 +1,19 @@
 ﻿using DiscountCalculator.Models;
 using DiscountCalculator.Services.Interfaces;
-using System;
 using System.Linq;
 
 namespace DiscountCalculator.Services
 {
 	public class RulesService : IRulesService
 	{
-		public static int lpLargeShipmentsCount = 0;
-		public static decimal monthlyDiscouts = Constants.MonthlyDiscouts;
+		private int lpLargeShipmentsCount;
+		private decimal monthlyDiscouts;
+
+		public RulesService()
+		{
+			lpLargeShipmentsCount = 0;
+			monthlyDiscouts = Constants.MonthlyDiscouts;
+		}
 
 		public void ApplyRules(Shipment shipment, bool isNextMonth)
 		{

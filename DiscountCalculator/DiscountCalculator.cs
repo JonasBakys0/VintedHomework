@@ -19,7 +19,7 @@ namespace DiscountCalculator
 			{
 				while ((readLine = sr.ReadLine()) != null)
 				{
-					_service.CalculateShipmentsDiscounts(readLine);
+					_service.CalculateShipmentDiscount(readLine);
 				}
 			}
 			
