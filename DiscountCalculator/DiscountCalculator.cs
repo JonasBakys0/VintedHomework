@@ -15,6 +15,7 @@ namespace DiscountCalculator
 		public void Run()
 		{
 			string readLine;
+			// Rows in input.txt file should be ordered by date
 			using (var sr = new StreamReader("input.txt"))
 			{
 				while ((readLine = sr.ReadLine()) != null)
